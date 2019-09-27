@@ -29,6 +29,7 @@ Carta *iniciarListaMazo(){
 	return C;
 }
 
+//aññade carta(archivo) a la lista enlazada de Cartas
 void addCarta(Carta *base,char*archivo){
 	int i=0;
 
@@ -54,12 +55,14 @@ void addCarta(Carta *base,char*archivo){
 
 }
 
+//Mueve carta(value) desde fichero from a to
 void mover_carta(char* ruta, char* value, char* from, char* to){
 	char string[150];
 	sprintf(string,"mv '%s/%s/%s' %s/%s", ruta,from,value, ruta,to);
 	system(string);
 }
 
+//Elimina carta de lista enlazada de cartas
 char *eliminar_carta_del_mazo(Carta *base,int aleatorio,char*archivo){
 	int i=1;
 	Carta *ant=base;
@@ -83,6 +86,7 @@ char *eliminar_carta_del_mazo(Carta *base,int aleatorio,char*archivo){
 	}
 }
 
+//Muestra por consola todas las cartas de la mano de (jugador)
 void ver_mano(char* ruta, char* jugador){
 
 	char string[150];
@@ -108,6 +112,7 @@ void ver_mano(char* ruta, char* jugador){
 	closedir(dirp);
 }
 
+//Crea las carpetas especificadas en el enunciado dentro de la carpeta JUEGO
 void crearCarpetas(char *ruta){
 
 	strcat(ruta, "/JUEGO");
@@ -143,6 +148,7 @@ void crearCarpetas(char *ruta){
 	printf("Carpetas creadas satisfactoriamente\n");
 	}
 
+//Crea carta(path) en el fichero (directory)
 void crearArchivo(char path[],char directory[]){
    /* Creación y apertura del fichero */
    char string[100];
@@ -245,6 +251,7 @@ void crear_mazo(char*ruta){
 	printf("Mazo creado satisfactoriamente\n");
 }
 
+//Reparte de manera aleatoria las cartas a los jugadores, moviendolas del mazo al respectivo jugador
 void RepartirAleatorio(char *ruta){
 
 	char pathMazo[100];
@@ -311,5 +318,53 @@ void RepartirAleatorio(char *ruta){
 		i++;
 	}
 	printf("Cartas repartidas satisfactoriamente\n" );
+
+}
+
+//1 si es un movimiento valido, 0 si no
+int movimiento_valido(char *ruta, char *carta){
+
+	char card[30];
+	sprintf(card, "%s", carta);
+
+	printf("carta: %s\n", card);
+
+	char *valueCarta = strtok(card, "_");
+	char *colorCarta = strtok(NULL, "_");
+
+	printf("value carta: %s\n", valueCarta);
+	printf("color carta: %s\n", colorCarta);
+
+	if( (strcmp(valueCarta, "+4") == 0) || strcmp(valueCarta, "Change") == 0 )
+		return 1;
+
+	char string[150];
+	sprintf(string, "%s/%s", ruta, "Revelada");
+
+	DIR* dirp;
+	dirp= opendir(string);
+	struct dirent *ent;
+
+	if (dirp == NULL){
+		perror("No puedo abrir el directorio");
+	}
+
+	char *revelada;
+
+	while ((ent = readdir (dirp)) != NULL){
+
+		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+			revelada = strtok(ent->d_name, ".");//Se imprimen cartas sin el .txt
+		}
+	}
+	closedir(dirp);
+
+	char *valueRevelada = strtok(revelada, "_");
+	char *colorRevelada = strtok(NULL, "_");
+
+	if(strcmp(valueCarta, valueRevelada) == 0 || strcmp(colorCarta, colorRevelada) == 0)
+		return 1;
+
+	return 0;
 
 }

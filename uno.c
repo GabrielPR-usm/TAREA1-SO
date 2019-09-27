@@ -21,7 +21,6 @@ int main(){
 	crear_mazo(ruta);
 	RepartirAleatorio(ruta);
 
-	ver_mano(ruta, "Jugador1");
 
 	return 0;
-	}
+}
