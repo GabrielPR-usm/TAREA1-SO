@@ -92,6 +92,8 @@ void ver_mano(char* ruta, char* jugador){
 	char string[150];
 	sprintf(string, "%s/%s", ruta, jugador);
 
+	int i = 1;
+
 	DIR* dirp;
 	dirp= opendir(string);
 	struct dirent *ent;
@@ -100,16 +102,18 @@ void ver_mano(char* ruta, char* jugador){
 		perror("No puedo abrir el directorio");
 	}
 
-	printf("\n||||Cartas de %s\n", jugador);
+	printf("\nCartas de %s\n", jugador);
 
 	while ((ent = readdir (dirp)) != NULL){
 
 		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
-			char *token = strtok(ent->d_name, ".");//Se imprimen cartas sin el .txt
-			printf("||||%s\n", token);
+			printf("- %s\n", ent->d_name);
+			i++;
 		}
 	}
 	closedir(dirp);
+	printf("\n- Robar carta\n");
+	printf("Escriba el nombre ompleto de la carta (incluida su extensión .txt), o 'Robar' en otro caso: ");
 }
 
 //Crea las carpetas especificadas en el enunciado dentro de la carpeta JUEGO
@@ -252,7 +256,7 @@ void crear_mazo(char*ruta){
 }
 
 //Reparte de manera aleatoria las cartas a los jugadores, moviendolas del mazo al respectivo jugador
-void RepartirAleatorio(char *ruta){
+Carta *RepartirAleatorio(char *ruta){
 
 	char pathMazo[100];
 	sprintf(pathMazo,"%s/Mazo",ruta);
@@ -286,48 +290,91 @@ void RepartirAleatorio(char *ruta){
 	}
 	closedir(dirp);
 	printf("REPARTIENDO\n");
+
 	while (i<30){
 		aleatorio = 1+rand()%(Ncartas);
-
 		repartido = eliminar_carta_del_mazo(base,aleatorio,archivo);
-		dirp= opendir(pathMazo);
 
-		while ((ent = readdir (dirp)) != NULL){
-			if (strcmp(ent->d_name,repartido)==0){
-
-				if(0<i && i<8){
-					mover_carta(ruta, repartido, "Mazo", "Jugador1");
-				}
-				if(7<i && i<15){
-				  	mover_carta(ruta, repartido, "Mazo", "Jugador2");
-			  	}
-			 	if(14<i && i<22){
-					mover_carta(ruta, repartido, "Mazo", "Jugador3");
-				}
-		  		if(21<i && i<29){
-			  		mover_carta(ruta, repartido, "Mazo", "Jugador4");
-		  		}
-			  	if(i==29){
-				  	mover_carta(ruta, repartido, "Mazo", "Revelada");
-		  		}
-
-			}
+		if(0<i && i<8){
+			mover_carta(ruta, repartido, "Mazo", "Jugador1");
 		}
-		closedir(dirp);
+		if(7<i && i<15){
+		  	mover_carta(ruta, repartido, "Mazo", "Jugador2");
+	  	}
+	 	if(14<i && i<22){
+			mover_carta(ruta, repartido, "Mazo", "Jugador3");
+		}
+  		if(21<i && i<29){
+	  		mover_carta(ruta, repartido, "Mazo", "Jugador4");
+  		}
+	  	if(i==29){
+		  	mover_carta(ruta, repartido, "Mazo", "Revelada");
+  		}
+
 		Ncartas--;
 		i++;
 	}
 	printf("Cartas repartidas satisfactoriamente\n" );
+	return base;
 
 }
 
+//roba n cartas del mazo al jugador(playernumber)
+void robarCartas(char *ruta, int playerNumber, int n){
+
+	int i = 0;
+	srand(time(NULL));
+
+	char player[15];
+	sprintf(player, "Jugador%d", playerNumber);
+
+	while (i < n){
+
+		if( Ncartas == 0 ){
+			printf("Ya no quedan mas cartas en el mazo\n");
+			return;
+		}
+
+		int j = 0;
+		int aleatorio = 1+rand()%(Ncartas);
+
+		char string[150];
+		sprintf(string, "%s/%s", ruta, "Mazo");
+
+		DIR* dirp;
+		dirp= opendir(string);
+		struct dirent *ent;
+
+		if (dirp == NULL){
+			perror("No puedo abrir el directorio");
+		}
+
+		char *revelada;
+
+		while ((ent = readdir (dirp)) != NULL){
+
+			if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+				if( j == aleatorio )
+					mover_carta(ruta, ent->d_name, "Mazo", player);
+				else
+					j++;
+
+			}
+		}
+		closedir(dirp);
+
+		Ncartas--;
+		i++;
+	}
+}
+
 //1 si es un movimiento valido, 0 si no
-int movimiento_valido(char *ruta, char *carta){
+int movimiento_valido(char *ruta, char *newCarta, char *oldCarta){
 
 	char card[30];
-	sprintf(card, "%s", carta);
+	sprintf(card, "%s", newCarta);
 
-	printf("carta: %s\n", card);
+	printf("carta: %s\n", newCarta);
 
 	char *valueCarta = strtok(card, "_");
 	char *colorCarta = strtok(NULL, "_");
@@ -337,6 +384,8 @@ int movimiento_valido(char *ruta, char *carta){
 
 	if( (strcmp(valueCarta, "+4") == 0) || strcmp(valueCarta, "Change") == 0 )
 		return 1;
+
+
 
 	char string[150];
 	sprintf(string, "%s/%s", ruta, "Revelada");
@@ -362,9 +411,131 @@ int movimiento_valido(char *ruta, char *carta){
 	char *valueRevelada = strtok(revelada, "_");
 	char *colorRevelada = strtok(NULL, "_");
 
+
+
 	if(strcmp(valueCarta, valueRevelada) == 0 || strcmp(colorCarta, colorRevelada) == 0)
 		return 1;
 
 	return 0;
 
+}
+
+//1-4,  Cambio de color Blue, Red, Green, Yellow
+//5-8,	color mas Salto de jugador(salto, +2, +4)
+//9-12, color mas Cambio de sentido
+int jugarCarta(char *ruta, char *colorActual, int currPlayer, int nextPlayer){
+
+	char nextP[15];
+	sprintf(nextP, "Jugador%d", nextPlayer);
+
+	char currentP[15];
+	sprintf(currentP, "Jugador%d", currPlayer);
+
+	//-------------------EXTRAE CARTA REVELADA------------------//
+	char string[150];
+	sprintf(string, "%s/%s", ruta, "Revelada");
+
+	DIR* dirp;
+	dirp= opendir(string);
+	struct dirent *ent;
+
+	if (dirp == NULL){
+		perror("No puedo abrir el directorio");
+	}
+
+	char *revelada;
+
+	while ((ent = readdir (dirp)) != NULL){
+
+		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+			revelada = strtok(ent->d_name, ".");//Se imprimen cartas sin el .txt
+		}
+	}
+	closedir(dirp);
+
+	char *valueRevelada = strtok(revelada, "_");
+	char *colorRevelada = strtok(NULL, "_");
+	//---------------------------------------------------------//
+
+	char choice[30];
+
+	while(strcmp(choice, "Robar") != 0 && strcmp(choice, "robar") != 0){
+
+		printf("Carta Revelada: %s_%s.txt\n", valueRevelada, colorRevelada);
+
+		ver_mano(ruta, currentP);
+		scanf("%s", choice);
+
+		//----------------------EXTRAE CARTA NUEVA------------------//
+		char *card = strtok(choice, ".");
+
+		char *valueCarta = strtok(card, "_");
+		char *colorCarta = strtok(NULL, "_");
+		//---------------------------------------------------------//
+
+		if( strcmp(valueCarta, valueRevelada) != 0 && strcmp(colorCarta, colorActual) != 0 ){
+
+			if( (strcmp(valueCarta, "+4") == 0) || strcmp(valueCarta, "Change") == 0 ){
+
+				char rmvCard[40];
+				sprintf(rmvCard, "%s/%s.txt", string, revelada);
+				int status = remove(rmvCard);
+
+				mover_carta(ruta, choice, currentP, "Revelada");
+
+				int newColor;
+				int poder = 0;
+
+				printf("Color: \n");
+				printf("1.- Blue\n");
+				printf("2.- Red\n");
+				printf("3.- Green\n");
+				printf("4.- Yellow\n");
+				printf("Elija un numero: \n");
+				scanf("%d", &newColor);
+
+				if(strcmp(valueCarta, "+4") == 0){
+					robarCartas(ruta, nextPlayer, 4);
+					poder = 4;
+				}
+
+
+				return newColor + poder;
+			}
+
+			printf("No es posible jugar esta carta, intenta con otra\n\n\n\n" );
+		}
+		else{//movimiento valido
+			printf("valido!\n" );
+			char rmvCard[40];
+			sprintf(rmvCard, "%s/%s.txt", string, revelada);
+			int status = remove(rmvCard);
+
+			mover_carta(ruta, choice, currentP, "Revelada");
+
+			int poder = 0;//4, salto/8, reverse
+
+			if( strcmp(valueCarta, "+2") ){
+				poder = 4;
+				robarCartas(ruta, nextPlayer, 2);
+			}
+			else if( strcmp(valueCarta, "Reverse") )
+				poder = 8;
+			else if( strcmp(valueCarta, "Jump") ){
+				poder = 4;
+			}
+
+			if( strcmp(colorCarta, "Blue") == 0 )
+				return 1+poder;
+			else if( strcmp(colorCarta, "Red") == 0 )
+				return 2+poder;
+			else if( strcmp(colorCarta, "Green") == 0 )
+				return 3+poder;
+			else if( strcmp(colorCarta, "Yellow") == 0 )
+				return 4+poder;
+
+		}
+
+	}
+	return 0;
 }
