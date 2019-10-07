@@ -19,9 +19,33 @@ int main(){
 
 	printf("\nBienvenido a UNO, que comienze el Juego!\n");
 	crear_mazo(ruta);
-	Carta *base = RepartirAleatorio(ruta);
+	RepartirAleatorio(ruta);
 
-	jugarCarta(ruta, "Blue", 1, 2);
+	char string[150];
+	sprintf(string, "%s/%s", ruta, "Revelada");
+
+	DIR* dirp;
+	dirp= opendir(string);
+	struct dirent *ent;
+
+	if (dirp == NULL){
+		perror("No puedo abrir el directorio");
+	}
+
+	char *revelada;
+
+	while ((ent = readdir (dirp)) != NULL){
+
+		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+			revelada = strtok(ent->d_name, ".");//Se imprimen cartas sin el .txt
+		}
+	}
+	closedir(dirp);
+
+	char *valueRevelada = strtok(revelada, "_");
+	char *colorRevelada = strtok(NULL, "_");
+
+	jugarCarta(ruta, colorRevelada, 1, 2);
 	/*
 	pid_t pid;
 	int jugador1,jugador2,jugador3,jugador4;
