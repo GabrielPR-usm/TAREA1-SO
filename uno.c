@@ -19,32 +19,35 @@ int main(){
 
 	printf("\nBienvenido a UNO, que comienze el Juego!\n");
 	crear_mazo(ruta);
-	RepartirAleatorio(ruta);
-	
+	Carta *base = RepartirAleatorio(ruta);
+
+	jugarCarta(ruta, "Blue", 1, 2);
+	/*
 	pid_t pid;
 	int jugador1,jugador2,jugador3,jugador4;
 	int pipe1y2[2],pipe1y3[2],pipe1y4[2],pipe2y3[2],pipe2y4[2],pipe3y4[2];
 	char mensaje[100];
 	pipe(pipe1y2);
-	
+
 	jugador1=getpid();
 	printf("%d\n", getpid());
 	pid = fork();
+
 	if(pid==0){
 		jugador2=getpid();
 		printf("%d\n", getpid());
-		}
-    if (pid>0){
+
+	}
+	if (pid>0){
     	pid=fork();
-    	
+
     	if(pid==0){
 			jugador3=getpid();
 			printf("%d\n", getpid());
 		}
-		
 		if (pid>0){
 			pid=fork();
-			
+
 			if(pid==0){
 				jugador4=getpid();
 				printf("%d\n", getpid());
@@ -55,16 +58,16 @@ int main(){
 
 	if(jugador1==getpid()){
 		printf("CACA\n");
-		}
+	}
 	else if(jugador2==getpid()){
-		}
+	}
 	else if(jugador3==getpid()){
-		}
+	}
 	else{
-		}
+	}
 
+*/
 
-	
 /*	pid_t pid;
 	char mensaje[100];
 	int num;
@@ -74,7 +77,7 @@ int main(){
 		close(pipe1y2[0]);
 		write(pipe1y2[1],"abcde",5);
 		write(pipe1y2[1],"abcdeSDFSD",10);
-		
+
 		exit(0);
 		}
 	else if(pid==-1){
@@ -89,7 +92,6 @@ int main(){
 		printf("Padre lee %d bytes: %s \n",num,mensaje);
 		close(pipe1y2[0]);
 		}
-
 */
 	return 0;
 }
