@@ -322,7 +322,7 @@ int jugarCarta(char *ruta, char *colorActual, int currPlayer, int nextPlayer){
 
 	char currentP[15];
 	sprintf(currentP, "Jugador%d", currPlayer);
-	
+
 	//-------------------EXTRAE CARTA REVELADA------------------//
 	char string[150];
 	sprintf(string, "%s/%s", ruta, "Revelada");
@@ -335,24 +335,30 @@ int jugarCarta(char *ruta, char *colorActual, int currPlayer, int nextPlayer){
 		perror("No puedo abrir el directorio");
 	}
 
-	char *revelada;
+	char revelada[30];
+	char rev[30];
 
 	while ((ent = readdir (dirp)) != NULL){
 
 		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
-			revelada = strtok(ent->d_name, ".");//Se imprimen cartas sin el .txt
+			printf("ent-> %s\n", ent->d_name);
+			strcpy(revelada, ent->d_name);
+			strcpy(rev, ent->d_name);
 		}
 	}
 	closedir(dirp);
 
-	char *valueRev = strtok(revelada, "_");
-	char *colorRev = strtok(NULL, "_");
+	char valueRev[10];
+	char colorRev[10];
+	sprintf(valueRev, "%s", strtok(revelada, "_"));
+	sprintf(colorRev, "%s", strtok(NULL, "_"));
 	//---------------------------------------------------------//
 
 	char choice[30];
 
 	while(strcmp(choice, "Robar") != 0 && strcmp(choice, "robar") != 0){
 
+		printf("revelada: %s\n", rev);
 		printf("Carta Revelada: %s_%s.png\n", valueRev, colorRev);
 
 		ver_mano(ruta, currentP);
@@ -368,6 +374,7 @@ int jugarCarta(char *ruta, char *colorActual, int currPlayer, int nextPlayer){
 		printf("\nCOMPARANDO\n");
 		printf("REV value: %s\nREV color: %s\n", valueRev, colorRev);
 		printf("NEW value: %s\nNEW color: %s\n", valueCarta, colorCarta);
+		printf("color actual: %s\n", colorActual);
 
 		if( (strcmp(valueCarta, valueRev) != 0) && (strcmp(colorCarta, colorActual) != 0) ){
 
@@ -407,10 +414,21 @@ int jugarCarta(char *ruta, char *colorActual, int currPlayer, int nextPlayer){
 			printf("No es posible jugar esta carta, intenta con otra\n\n\n\n" );
 		}
 		else{//movimiento valido
+
+			printf("Else\n" );
 			printf("Antes del remove\n" );
-			char rmvCard[40];
-			sprintf(rmvCard, "%s/%s.txt", string, revelada);
+
+			char rmvCard[100];
+			printf("revelada: %s\n", rev);
+			sprintf(rmvCard, "%s/%s", string, rev);
 			int status = remove(rmvCard);
+
+			if( status == 0 )
+		        printf("%s file deleted successfully.\n",  rev);
+		    else {
+		        printf("\n\tUnable to delete the file");
+		        perror("\n\tError");
+		    }
 
 			printf("Despues del remove\n" );
 
