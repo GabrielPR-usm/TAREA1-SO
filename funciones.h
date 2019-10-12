@@ -143,91 +143,93 @@ void seleccionar_jugada(char* ruta, int jugador, char*jugada,char*revelada,char*
 	
 	if(i>1){
 			int j=i;
-	printf("%d.- Robar\n", i);
-	closedir(dirp);
-
-	printf("Ingresa el numero de tu jugada: ");
-	scanf("%d",&i);
-	if(j==i){
-		robarCartas(ruta,1,1);
-		dirp= opendir(string);
-		struct dirent *ent;
-
-		if (dirp == NULL){
-			perror("No puedo abrir el directorio");
-		}
-
-		printf("\nCartas de Jugador%d\n", jugador);
-		int k=1;
-		while ((ent = readdir (dirp)) != NULL){
-
-			if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
-				printf("%d.- %s\n", k, ent->d_name);
-				k++;
-			}
-		}
-		printf("%d.- Paso\n",k);
-		closedir(dirp);
-		printf("Ingresa el numero de tu jugada: ");
-		scanf("%d",&i);
-		if(i==k){
-			strcpy(jugada,"Paso");
-			printf("Seleccionaste: %s\n",jugada);
-			}
-		else{
-			dirp= opendir(string);
-			struct dirent *ent;
-
-			if (dirp == NULL){
-				perror("No puedo abrir el directorio");
-			}
-
-			printf("\nCartas seleccionada\n");
-			int k=0;
-			while ((ent = readdir (dirp)) != NULL){
-
-				if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
-					k++;
-					if(i==k){
-						printf("%d.- %s\n", i, ent->d_name);
-						strcpy(jugada,ent->d_name);
-						}
-				
-				}
-			
-			}
+			printf("%d.- Robar\n", i);
 			closedir(dirp);
-		}
-	}
-	
-	else{
-		dirp= opendir(string);
-		struct dirent *ent;
 
-		if (dirp == NULL){
-			perror("No puedo abrir el directorio");
-		}
-
-		printf("\nCarta seleccionada\n");
-		int k=0;
-		while ((ent = readdir (dirp)) != NULL){
-
-			if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
-				k++;
-				if(i==k){
-					printf("%d.- %s\n", i, ent->d_name);
-					strcpy(jugada,ent->d_name);
-					}
+			printf("Ingresa el numero de tu jugada: ");
+			scanf("%d",&i);
 			
+			if(j==i){
+				robarCartas(ruta,1,1);
+				dirp= opendir(string);
+				struct dirent *ent;
+
+				if (dirp == NULL){
+					perror("No puedo abrir el directorio");
+				}
+
+				printf("\nCartas de Jugador%d\n", jugador);
+				int k=1;
+				while ((ent = readdir (dirp)) != NULL){
+
+					if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+						printf("%d.- %s\n", k, ent->d_name);
+						k++;
+					}
+				}
+				printf("%d.- Paso\n",k);
+				closedir(dirp);
+				printf("Ingresa el numero de tu jugada: ");
+				scanf("%d",&i);
+				if(i==k){
+					strcpy(jugada,"Paso");
+					printf("Seleccionaste: %s\n",jugada);
+					}
+				else{
+					dirp= opendir(string);
+					struct dirent *ent;
+
+					if (dirp == NULL){
+						perror("No puedo abrir el directorio");
+					}
+
+					printf("\nCartas seleccionada\n");
+					int k=0;
+					while ((ent = readdir (dirp)) != NULL){
+
+						if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+							k++;
+							if(i==k){
+								printf("%d.- %s\n", i, ent->d_name);
+								strcpy(jugada,ent->d_name);
+								}
+						
+						}
+					
+					}
+					closedir(dirp);
+				}
 			}
-		}
-		closedir(dirp);
-		}
-	//printf("\n- Robar carta\n");
-	//printf("Escriba el nombre ompleto de la carta (incluida su extensión .txt), o 'Robar' en otro caso: ");
-	}
+		
+			else{
+				dirp= opendir(string);
+				struct dirent *ent;
+
+				if (dirp == NULL){
+					perror("No puedo abrir el directorio");
+				}
+
+				printf("\nCarta seleccionada\n");
+				int k=0;
+				while ((ent = readdir (dirp)) != NULL){
+
+					if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+						k++;
+						if(i==k){
+							printf("%d.- %s\n", i, ent->d_name);
+							strcpy(jugada,ent->d_name);
+							}
+					
+						}
+					}
+				closedir(dirp);
+				}
+			//printf("\n- Robar carta\n");
+			//printf("Escriba el nombre ompleto de la carta (incluida su extensión .txt), o 'Robar' en otro caso: ");
+			}
 	if(i==1){
-		strcpy(mensaje,"Hay ganador");
+		printf("No tiene Cartas\n");
+		strcpy(mensaje,"Hay Ganador");
 		}
 	
 	return;

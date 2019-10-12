@@ -31,8 +31,8 @@ int main(){
 	pipe(pipe1y2);
 
 	jugador1=getpid();
-	//printf("%d\n", getpid());
-	/*pid = fork();
+	printf("%d\n", getpid());
+	pid = fork();
 
 	if(pid==0){
 		jugador2=getpid();
@@ -55,7 +55,7 @@ int main(){
 			}
 		}
 	}
-	sleep(5);*/
+	sleep(5);
 	char mensaje[100]="Sin ganador";
 	char revelada[50];
 	char jugada[50];
@@ -65,20 +65,63 @@ int main(){
 			ver_revelada(ruta,revelada);
 			printf("%s\n",ChangeColor);
 			seleccionar_jugada(ruta,1,jugada,revelada,mensaje);
-			//printf("\n%s %s\n",jugada,revelada);
-			jugarCarta(ruta,revelada, jugada,ChangeColor,1);
-			//jugar carta
-			//esperar
+			if (strcmp(mensaje,"Hay Ganador")!=0){
+				//printf("\n%s %s\n",jugada,revelada);
+				jugarCarta(ruta,revelada, jugada,ChangeColor,1);
+				//jugar carta
+				//esperar
+			}
+		printf("EL jugador 1 es el GANADOR");
 		}
 	}
-/*	else if(jugador2==getpid()){
+	if(jugador2==getpid()){
+		while(strcmp(mensaje,"Hay Ganador")!=0){
+			//printf("%d\n",Ncartas);
+			ver_revelada(ruta,revelada);
+			printf("%s\n",ChangeColor);
+			seleccionar_jugada(ruta,2,jugada,revelada,mensaje);
+			if (strcmp(mensaje,"Hay Ganador")!=0){
+				//printf("\n%s %s\n",jugada,revelada);
+				jugarCarta(ruta,revelada, jugada,ChangeColor,1);
+				//jugar carta
+				//esperar
+			}
+		printf("EL jugador 2 es el GANADOR");
+		}
 	}
-	else if(jugador3==getpid()){
+	if(jugador3==getpid()){
+		while(strcmp(mensaje,"Hay Ganador")!=0){
+			//printf("%d\n",Ncartas);
+			ver_revelada(ruta,revelada);
+			printf("%s\n",ChangeColor);
+			seleccionar_jugada(ruta,3,jugada,revelada,mensaje);
+			if (strcmp(mensaje,"Hay Ganador")!=0){
+				//printf("\n%s %s\n",jugada,revelada);
+				jugarCarta(ruta,revelada, jugada,ChangeColor,1);
+				//jugar carta
+				//esperar
+			}
+		printf("EL jugador 3 es el GANADOR");
+		}
 	}
-	else{
-	}*/
+	if(jugador4==getpid()){
+		while(strcmp(mensaje,"Hay Ganador")!=0){
+			//printf("%d\n",Ncartas);
+			ver_revelada(ruta,revelada);
+			printf("%s\n",ChangeColor);
+			seleccionar_jugada(ruta,4,jugada,revelada,mensaje);
+			if (strcmp(mensaje,"Hay Ganador")!=0){
+				//printf("\n%s %s\n",jugada,revelada);
+				jugarCarta(ruta,revelada, jugada,ChangeColor,1);
+				//jugar carta
+				//esperar
+			}
+		printf("EL jugador 4 es el GANADOR");
+		}
+	}
 
-
+	return 0;
+}
 
 /*	pid_t pid;
 	char mensaje[100];
@@ -105,5 +148,3 @@ int main(){
 		close(pipe1y2[0]);
 		}
 */
-	return 0;
-}
