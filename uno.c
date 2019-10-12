@@ -21,41 +21,18 @@ int main(){
 	crear_mazo(ruta);
 	RepartirAleatorio(ruta);
 
-	char string[150];
-	sprintf(string, "%s/%s", ruta, "Revelada");
 
-	DIR* dirp;
-	dirp= opendir(string);
-	struct dirent *ent;
 
-	if (dirp == NULL){
-		perror("No puedo abrir el directorio");
-	}
-
-	char *revelada;
-
-	while ((ent = readdir (dirp)) != NULL){
-
-		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
-			revelada = strtok(ent->d_name, ".");//Se imprimen cartas sin el .txt
-		}
-	}
-	closedir(dirp);
-
-	char *valueRevelada = strtok(revelada, "_");
-	char *colorRevelada = strtok(NULL, "_");
-
-	jugarCarta(ruta, colorRevelada, 1, 2);
-	/*
+	
 	pid_t pid;
 	int jugador1,jugador2,jugador3,jugador4;
 	int pipe1y2[2],pipe1y3[2],pipe1y4[2],pipe2y3[2],pipe2y4[2],pipe3y4[2];
-	char mensaje[100];
+	
 	pipe(pipe1y2);
 
 	jugador1=getpid();
-	printf("%d\n", getpid());
-	pid = fork();
+	//printf("%d\n", getpid());
+	/*pid = fork();
 
 	if(pid==0){
 		jugador2=getpid();
@@ -78,19 +55,30 @@ int main(){
 			}
 		}
 	}
-	sleep(5);
-
+	sleep(5);*/
+	char mensaje[100]="Sin ganador";
+	char revelada[50];
+	char jugada[50];
 	if(jugador1==getpid()){
-		printf("CACA\n");
+		while(strcmp(mensaje,"Hay Ganador")!=0){
+			//printf("%d\n",Ncartas);
+			ver_revelada(ruta,revelada);
+			printf("%s\n",ChangeColor);
+			seleccionar_jugada(ruta,1,jugada,revelada,mensaje);
+			//printf("\n%s %s\n",jugada,revelada);
+			jugarCarta(ruta,revelada, jugada,ChangeColor,1);
+			//jugar carta
+			//esperar
+		}
 	}
-	else if(jugador2==getpid()){
+/*	else if(jugador2==getpid()){
 	}
 	else if(jugador3==getpid()){
 	}
 	else{
-	}
+	}*/
 
-*/
+
 
 /*	pid_t pid;
 	char mensaje[100];
