@@ -26,16 +26,14 @@ int main(){
 	
 	pid_t pid;
 	int jugador1,jugador2,jugador3,jugador4;
-	//int num12,num13,num14,num23,num24,num34;	
-	char mensaje12[10],mensaje13[10],mensaje14[10],mensaje23[10],mensaje24[10],mensaje34[10];
-	int pipe12[2],pipe13[2],pipe14[2],pipe23[2],pipe24[2],pipe34[2];
+	int pipe12[2],pipe13[2],pipe14[2],pipe21[2],pipe31[2],pipe41[2];
 	
 	pipe(pipe12);
 	pipe(pipe13);
 	pipe(pipe14);
-	pipe(pipe23);
-	pipe(pipe24);
-	pipe(pipe34);
+	pipe(pipe21);
+	pipe(pipe31);
+	pipe(pipe41);
 
 	jugador1=getpid();
 	printf("%d\n", getpid());
@@ -75,26 +73,27 @@ int main(){
 
 			while(strcmp(mensaje,"Hay Ganador")!=0){
 				
-				/*memset(mensaje12,'\0',10);
-				read(pipe12[0],mensaje12, sizeof(mensaje12));
-				memset(mensaje13,'\0',10);
-				read(pipe12[0],mensaje13, sizeof(mensaje13));
-				memset(mensaje14,'\0',10);
-				read(pipe14[0],mensaje14, sizeof(mensaje14));
-				memset(mensaje23,'\0',10);
-				read(pipe23[0],mensaje23, sizeof(mensaje23));
-				memset(mensaje24,'\0',10);
-				read(pipe24[0],mensaje24, sizeof(mensaje24));
-				memset(mensaje34,'\0',10);
-				read(pipe34[0],mensaje34, sizeof(mensaje34));*/
-				
-				if(strcmp(mensaje12,"TURNO1")==0 || strcmp(mensaje13,"TURNO1")==0
-				 || strcmp(mensaje14,"TURNO1")==0 || strcmp(mensaje23,"TURNO1")==0 
-				 || strcmp(mensaje24,"TURNO1")==0 || strcmp(mensaje34,"TURNO1")==0){
-					 
-					 strcpy(mensaje,"TURNO1");
-					 
-					}
+				if(strcmp(mensaje,"TURNO1")!=0){
+					
+					if(strcmp(mensaje,"TURNO2")==0){
+						read(pipe21[0],mensaje, sizeof(mensaje));
+						write(pipe12[1],mensaje,6);
+						write(pipe13[1],mensaje,6);
+						write(pipe14[1],mensaje,6);
+						}
+					if(strcmp(mensaje,"TURNO3")==0){
+						read(pipe31[0],mensaje, sizeof(mensaje));
+						write(pipe12[1],mensaje,6);
+						write(pipe13[1],mensaje,6);
+						write(pipe14[1],mensaje,6);
+						}
+					if(strcmp(mensaje,"TURNO4")==0){
+						read(pipe41[0],mensaje, sizeof(mensaje));
+						write(pipe12[1],mensaje,6);
+						write(pipe13[1],mensaje,6);
+						write(pipe14[1],mensaje,6);
+						}	
+				}
 				
 				if(Ncartas==0 || strcmp(mensaje,"Hay Ganador")==0){
 					break;
@@ -105,44 +104,49 @@ int main(){
 						ver_revelada(ruta,revelada);
 						strcpy(valueRevelada,revelada);
 						strcpy(valueRevelada,strtok(valueRevelada,"_"));
-						printf("%s\n",valueRevelada);
-						printf("%d %d\n",OcurrenciaJump,OcurrenciaReverse);
+						//printf("%s\n",valueRevelada);
+						//printf("%d %d\n",OcurrenciaJump,OcurrenciaReverse);
 						if(strcmp(valueRevelada,"Jump")==0 && OcurrenciaJump==1 && Nseleccionadas==0){//FUNCIONA
 								
 							OcurrenciaJump=0;
-							memset(mensaje12,'\0',10);
-							write(pipe12[1],"TURNO2",6);
+							memset(mensaje,'\0',50);
 							strcpy(mensaje,"TURNO2");
-							printf("caca");
+							write(pipe12[1],mensaje,6);
+							write(pipe13[1],mensaje,6);
+							write(pipe14[1],mensaje,6);
 							continue;
 								
 							}
 							
 						if(strcmp(valueRevelada,"Reverse")==0 && OcurrenciaReverse==1 && Nseleccionadas==0){//FUNCIONA
 							
-							memset(mensaje14,'\0',10);
-							write(pipe14[1],"TURNO4",6);
+							memset(mensaje,'\0',50);
 							strcpy(mensaje,"TURNO4");
-							printf("caca");
+							write(pipe14[1],mensaje,6);
+							write(pipe12[1],mensaje,6);
+							write(pipe13[1],mensaje,6);
 							continue;
 							
 							}
 							
-						printf("%s\n",ChangeColor);
+						printf("%s\n",ChangeColor);	
 						seleccionar_jugada(ruta,1,jugada,revelada,mensaje);
+						
 						if (strcmp(mensaje,"Hay Ganador")!=0){
 							//printf("\n%s %s\n",jugada,revelada);
 							mov_valido = jugarCarta(ruta,revelada, jugada,ChangeColor,1);
 							
 							strcpy(valueJugada,strtok(jugada,"_"));
 							
-							/*if(mov_valido==0){
+							if(mov_valido==0){
 								
 									if(strcmp(valueJugada,"Jump")==0){
 											
-											memset(mensaje13,'\0',10);
-											write(pipe13[1],"TURNO3",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO3");
+											write(pipe13[1],mensaje,6);
+											write(pipe12[1],mensaje,6);
+											write(pipe14[1],mensaje,6);										
 											continue;
 										}
 									
@@ -150,31 +154,39 @@ int main(){
 										
 										if(strcmp(valueJugada,"Reverse")==0){
 											
-											memset(mensaje14,'\0',10);
-											write(pipe14[1],"TURNO4",6);
-											strcpy(mensaje,"TURNO4");
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO2");
+											write(pipe14[1],mensaje,6);
+											write(pipe12[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
 											continue;
 										}
 										if(strcmp(valueJugada,"+4")==0){
 											
 											SumaRobar+=4;
-											memset(mensaje12,'\0',10);
-											write(pipe12[1],"TURNO2",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO2");
+											write(pipe12[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe14[1],mensaje,6);											
 											continue;
 										}
 										if(strcmp(valueJugada,"+2")==0){
 											SumaRobar+=2;
-											memset(mensaje12,'\0',10);
-											write(pipe12[1],"TURNO2",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO2");
+											write(pipe12[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe14[1],mensaje,6);											
 											continue;
 										}
 										else{
 											
-											memset(mensaje12,'\0',10);
-											write(pipe12[1],"TURNO2",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO2");
+											write(pipe12[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe14[1],mensaje,6);											
 											continue;
 										}
 									}
@@ -183,31 +195,39 @@ int main(){
 										
 										if(strcmp(valueJugada,"Reverse")==0){
 											
-											memset(mensaje12,'\0',10);
-											write(pipe12[1],"TURNO2",6);
-											strcpy(mensaje,"TURNO2");
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe12[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe14[1],mensaje,6);											
 											continue;
 										}
 										if(strcmp(valueJugada,"+4")==0){
 											
 											SumaRobar+=4;
-											memset(mensaje14,'\0',10);
-											write(pipe14[1],"TURNO4",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO4");
+											write(pipe14[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe12[1],mensaje,6);											
 											continue;
 										}
 										if(strcmp(valueJugada,"+2")==0){
 											SumaRobar+=2;
-											memset(mensaje14,'\0',10);
-											write(pipe14[1],"TURNO4",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO4");
+											write(pipe14[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe12[1],mensaje,6);											
 											continue;
 										}
 										else{
 											
-											memset(mensaje14,'\0',10);
-											write(pipe14[1],"TURNO4",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO4");
+											write(pipe14[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe12[1],mensaje,6);											
 											continue;
 										}
 										
@@ -217,20 +237,24 @@ int main(){
 							else{
 									if(OcurrenciaReverse==0){
 										
-											memset(mensaje12,'\0',10);
-											write(pipe12[1],"TURNO2",6);
+											memset(mensaje,'\0',50);
 											strcpy(mensaje,"TURNO2");
+											write(pipe12[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe14[1],mensaje,6);											
 											continue;
 										
 										}
 									if(OcurrenciaReverse==1){
 										
-											memset(mensaje14,'\0',10);
-											write(pipe14[1],"TURNO4",6);
+											memset(mensaje,'\0',10);
 											strcpy(mensaje,"TURNO4");
+											write(pipe14[1],mensaje,6);
+											write(pipe13[1],mensaje,6);
+											write(pipe12[1],mensaje,6);											
 											continue;
 										}
-							}*/
+							}
 							//jugar carta
 							//esperar
 						}				
@@ -247,26 +271,8 @@ int main(){
 		
 			while(strcmp(mensaje,"Hay Ganador")!=0){
 				
-				/*memset(mensaje12,'\0',10);
-				num12=read(pipe12[0],mensaje12, sizeof(mensaje12));
-				memset(mensaje13,'\0',10);
-				num13=read(pipe12[0],mensaje13, sizeof(mensaje13));
-				memset(mensaje14,'\0',10);
-				num14=read(pipe14[0],mensaje14, sizeof(mensaje14));
-				memset(mensaje23,'\0',10);
-				num23=read(pipe23[0],mensaje23, sizeof(mensaje23));
-				memset(mensaje24,'\0',10);
-				num24=read(pipe24[0],mensaje24, sizeof(mensaje24));
-				memset(mensaje34,'\0',10);
-				num34=read(pipe34[0],mensaje34, sizeof(mensaje34));*/
 				
-				if(strcmp(mensaje12,"TURNO2")==0 || strcmp(mensaje13,"TURNO2")==0
-				 || strcmp(mensaje14,"TURNO2")==0 || strcmp(mensaje23,"TURNO2")==0 
-				 || strcmp(mensaje24,"TURNO2")==0 || strcmp(mensaje34,"TURNO2")==0){
-					 
-					 strcpy(mensaje,"TURNO2");
-					 
-					}
+				read(pipe12[0],mensaje, sizeof(mensaje));
 				
 				if(Ncartas==0 || strcmp(mensaje,"Hay Ganador")==0){
 					break;
@@ -280,6 +286,104 @@ int main(){
 						if (strcmp(mensaje,"Hay Ganador")!=0){
 							//printf("\n%s %s\n",jugada,revelada);
 							mov_valido = jugarCarta(ruta,revelada, jugada,ChangeColor,2);
+							
+							strcpy(valueJugada,strtok(jugada,"_"));
+							
+							if(mov_valido==0){
+								
+									if(strcmp(valueJugada,"Jump")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+									
+									if(OcurrenciaReverse==0){
+										
+										if(strcmp(valueJugada,"Reverse")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe21[1],mensaje,6);
+											continue;
+										}
+										if(strcmp(valueJugada,"+4")==0){
+											
+											SumaRobar+=4;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+										if(strcmp(valueJugada,"+2")==0){
+											SumaRobar+=2;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+										else{
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+									}
+									
+									if(OcurrenciaReverse==1){
+										
+										if(strcmp(valueJugada,"Reverse")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+										if(strcmp(valueJugada,"+4")==0){
+											
+											SumaRobar+=4;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe21[1],mensaje,6);											
+											continue;
+										}
+										if(strcmp(valueJugada,"+2")==0){
+											SumaRobar+=2;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+										else{
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										}
+										
+									}
+									
+							}
+							else{
+									if(OcurrenciaReverse==0){
+										
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe21[1],mensaje,6);										
+											continue;
+										
+										}
+									if(OcurrenciaReverse==1){
+										
+											memset(mensaje,'\0',10);
+											strcpy(mensaje,"TURNO1");
+											write(pipe21[1],mensaje,6);											
+											continue;
+										}
+							}
 							//jugar carta
 							//esperar
 						}
@@ -294,26 +398,7 @@ int main(){
 		
 			while(strcmp(mensaje,"Hay Ganador")!=0){
 				
-				/*memset(mensaje12,'\0',10);
-				num12=read(pipe12[0],mensaje12, sizeof(mensaje12));
-				memset(mensaje13,'\0',10);
-				num13=read(pipe12[0],mensaje13, sizeof(mensaje13));
-				memset(mensaje14,'\0',10);
-				num14=read(pipe14[0],mensaje14, sizeof(mensaje14));
-				memset(mensaje23,'\0',10);
-				num23=read(pipe23[0],mensaje23, sizeof(mensaje23));
-				memset(mensaje24,'\0',10);
-				num24=read(pipe24[0],mensaje24, sizeof(mensaje24));
-				memset(mensaje34,'\0',10);
-				num34=read(pipe34[0],mensaje34, sizeof(mensaje34));*/
-				
-				if(strcmp(mensaje12,"TURNO3")==0 || strcmp(mensaje13,"TURNO3")==0
-				 || strcmp(mensaje14,"TURNO3")==0 || strcmp(mensaje23,"TURNO3")==0 
-				 || strcmp(mensaje24,"TURNO3")==0 || strcmp(mensaje34,"TURNO3")==0){
-					 
-					 strcpy(mensaje,"TURNO3");
-					 
-					}
+				read(pipe13[0],mensaje, sizeof(mensaje));
 				
 				if(Ncartas==0 || strcmp(mensaje,"Hay Ganador")==0){
 					break;
@@ -327,6 +412,104 @@ int main(){
 						if (strcmp(mensaje,"Hay Ganador")!=0){
 							//printf("\n%s %s\n",jugada,revelada);
 							mov_valido = jugarCarta(ruta,revelada, jugada,ChangeColor,3);
+							
+							strcpy(valueJugada,strtok(jugada,"_"));
+							
+							if(mov_valido==0){
+								
+									if(strcmp(valueJugada,"Jump")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+									
+									if(OcurrenciaReverse==0){
+										
+										if(strcmp(valueJugada,"Reverse")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe31[1],mensaje,6);
+											continue;
+										}
+										if(strcmp(valueJugada,"+4")==0){
+											
+											SumaRobar+=4;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+										if(strcmp(valueJugada,"+2")==0){
+											SumaRobar+=2;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+										else{
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+									}
+									
+									if(OcurrenciaReverse==1){
+										
+										if(strcmp(valueJugada,"Reverse")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO2");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+										if(strcmp(valueJugada,"+4")==0){
+											
+											SumaRobar+=4;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO2");
+											write(pipe31[1],mensaje,6);											
+											continue;
+										}
+										if(strcmp(valueJugada,"+2")==0){
+											SumaRobar+=2;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO2");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+										else{
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO2");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										}
+										
+									}
+									
+							}
+							else{
+									if(OcurrenciaReverse==0){
+										
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO4");
+											write(pipe31[1],mensaje,6);										
+											continue;
+										
+										}
+									if(OcurrenciaReverse==1){
+										
+											memset(mensaje,'\0',10);
+											strcpy(mensaje,"TURNO2");
+											write(pipe31[1],mensaje,6);											
+											continue;
+										}
+							}
 							//jugar carta
 							//esperar
 						}
@@ -341,26 +524,7 @@ int main(){
 		
 			while(strcmp(mensaje,"Hay Ganador")!=0){
 				
-				/*memset(mensaje12,'\0',10);
-				num12=read(pipe12[0],mensaje12, sizeof(mensaje12));
-				memset(mensaje13,'\0',10);
-				num13=read(pipe12[0],mensaje13, sizeof(mensaje13));
-				memset(mensaje14,'\0',10);
-				num14=read(pipe14[0],mensaje14, sizeof(mensaje14));
-				memset(mensaje23,'\0',10);
-				num23=read(pipe23[0],mensaje23, sizeof(mensaje23));
-				memset(mensaje24,'\0',10);
-				num24=read(pipe24[0],mensaje24, sizeof(mensaje24));
-				memset(mensaje34,'\0',10);
-				num34=read(pipe34[0],mensaje34, sizeof(mensaje34));*/
-				
-				if(strcmp(mensaje12,"TURNO4")==0 || strcmp(mensaje13,"TURNO4")==0
-				 || strcmp(mensaje14,"TURNO4")==0 || strcmp(mensaje23,"TURNO4")==0 
-				 || strcmp(mensaje24,"TURNO4")==0 || strcmp(mensaje34,"TURNO4")==0){
-					 
-					 strcpy(mensaje,"TURNO4");
-					 
-					}
+				read(pipe14[0],mensaje, sizeof(mensaje));
 				
 				if(Ncartas==0 || strcmp(mensaje,"Hay Ganador")==0){
 					break;
@@ -374,6 +538,104 @@ int main(){
 						if (strcmp(mensaje,"Hay Ganador")!=0){
 							//printf("\n%s %s\n",jugada,revelada);
 							mov_valido = jugarCarta(ruta,revelada, jugada,ChangeColor,4);
+							
+							strcpy(valueJugada,strtok(jugada,"_"));
+							
+							if(mov_valido==0){
+								
+									if(strcmp(valueJugada,"Jump")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO2");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+									
+									if(OcurrenciaReverse==0){
+										
+										if(strcmp(valueJugada,"Reverse")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe41[1],mensaje,6);
+											continue;
+										}
+										if(strcmp(valueJugada,"+4")==0){
+											
+											SumaRobar+=4;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+										if(strcmp(valueJugada,"+2")==0){
+											SumaRobar+=2;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+										else{
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+									}
+									
+									if(OcurrenciaReverse==1){
+										
+										if(strcmp(valueJugada,"Reverse")==0){
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+										if(strcmp(valueJugada,"+4")==0){
+											
+											SumaRobar+=4;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe41[1],mensaje,6);											
+											continue;
+										}
+										if(strcmp(valueJugada,"+2")==0){
+											SumaRobar+=2;
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+										else{
+											
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO3");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										}
+										
+									}
+									
+							}
+							else{
+									if(OcurrenciaReverse==0){
+										
+											memset(mensaje,'\0',50);
+											strcpy(mensaje,"TURNO1");
+											write(pipe41[1],mensaje,6);										
+											continue;
+										
+										}
+									if(OcurrenciaReverse==1){
+										
+											memset(mensaje,'\0',10);
+											strcpy(mensaje,"TURNO3");
+											write(pipe41[1],mensaje,6);											
+											continue;
+										}
+							}
 							//jugar carta
 							//esperar
 						}
@@ -393,14 +655,14 @@ int main(){
 	close(pipe14[0]);
 	close(pipe14[1]);
 	
-	close(pipe23[0]);
-	close(pipe23[1]);
+	close(pipe21[0]);
+	close(pipe21[1]);
 	
-	close(pipe24[0]);
-	close(pipe24[1]);
+	close(pipe31[0]);
+	close(pipe31[1]);
 	
-	close(pipe34[0]);
-	close(pipe34[1]);
+	close(pipe41[0]);
+	close(pipe41[1]);
 	
 	return 0;
 }

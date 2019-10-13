@@ -151,6 +151,11 @@ void seleccionar_jugada(char* ruta, int jugador, char*jugada,char*revelada,char*
 		}
 	}
 	
+	if(i==1){
+		printf("No tiene Cartas\n");
+		strcpy(mensaje,"Hay Ganador");
+		}
+	
 	if(i>1){
 			int j=i;
 			printf("%d.- Robar\n", i);
@@ -160,7 +165,7 @@ void seleccionar_jugada(char* ruta, int jugador, char*jugada,char*revelada,char*
 			scanf("%d",&i);
 			
 			if(j==i){
-				robarCartas(ruta,1,1);
+				robarCartas(ruta,jugador,1);
 				dirp= opendir(string);
 				struct dirent *ent;
 
@@ -237,10 +242,6 @@ void seleccionar_jugada(char* ruta, int jugador, char*jugada,char*revelada,char*
 			//printf("\n- Robar carta\n");
 			//printf("Escriba el nombre ompleto de la carta (incluida su extensión .txt), o 'Robar' en otro caso: ");
 			}
-	if(i==1){
-		printf("No tiene Cartas\n");
-		strcpy(mensaje,"Hay Ganador");
-		}
 	
 	return;
 }
@@ -413,8 +414,6 @@ int movimiento_valido(char *valueRevelada, char*colorRevelada ,char *valueJugada
 }
 
 //1-4,  Cambio de color Blue, Red, Green, Yellow
-//5-8,	color mas Salto de jugador(salto, +2, +4)
-//9-12, color mas Cambio de sentido
 void Change(){
 	printf("1.- Blue\n");
 	printf("2.- Red\n");
