@@ -16,9 +16,13 @@ struct stat st = {0};
 
 int Ncartas=108;
 
-int Nreverse=0;
-
 int SumaRobar=0;
+
+int Nseleccionadas=0;
+
+int OcurrenciaReverse=0;
+
+int OcurrenciaJump=0;
 
 char ChangeColor[15]="Sin color";
 
@@ -50,11 +54,17 @@ void ver_revelada(char*ruta,char*revelada){
 			char mostrada[50];
 			strcpy(mostrada,revelada);
 			char *valueRevelada = strtok(mostrada, "_");
-			if(strcmp(valueRevelada,"+4")==0){
+			if(strcmp(valueRevelada,"+4")==0 && Nseleccionadas==0){
 				SumaRobar+=4;
 				}
-			if(strcmp(valueRevelada,"+2")==0){
+			if(strcmp(valueRevelada,"+2")==0 && Nseleccionadas==0){
 				SumaRobar+=2;
+				}
+			if(strcmp(valueRevelada,"Jump")==0 && Nseleccionadas==0){
+				OcurrenciaJump=1;
+				}
+			if(strcmp(valueRevelada,"Reverse")==0 && Nseleccionadas==0){
+				OcurrenciaReverse=1;
 				}
 		}
 	}
@@ -385,7 +395,6 @@ void RepartirAleatorio(char *ruta){
 	robarCartas(ruta, 3, 7);
 	robarCartas(ruta, 4, 7);
 	robarCartas(ruta, 5, 1);//Revelada
-
 	printf("Cartas repartidas satisfactoriamente\n" );
 }
 
@@ -427,10 +436,9 @@ void Change(){
 		strcpy(ChangeColor,"Yellow");
 		}
 	}
-//Retorno para movimientos validos: 0 si no altera los turnos, 1 si es Jump, 2 si es Reverse;
-//Retorna 3 para Paso ;
-//Retorno para movimiento invalido: 0
-void jugarCarta(char*ruta,char*revelada ,char *jugada,char* ChangeColor,int currPlayer){
+//Retorno para movimientos validos: 0 
+//Retorno para movimiento invalido o Paso: 1
+int jugarCarta(char*ruta,char*revelada ,char *jugada,char* ChangeColor,int currPlayer){
 	char carta[50];
 	char remover[100];
 	char currentP[15];
@@ -453,8 +461,10 @@ void jugarCarta(char*ruta,char*revelada ,char *jugada,char* ChangeColor,int curr
 			SumaRobar=0;
 			printf("%d\n",SumaRobar);
 			}
+		return 1;
 		}
 	else{
+		Nseleccionadas+=1;
 		strcpy(carta,jugada);
 		char *valueJugada = strtok(carta, "_");
 		char *colorJugada = strtok(NULL, "_");
@@ -467,6 +477,7 @@ void jugarCarta(char*ruta,char*revelada ,char *jugada,char* ChangeColor,int curr
 				SumaRobar=0;
 				printf("%d\n",SumaRobar);
 				}
+			return 1;
 			}
 		else{
 			//printf("%s\n%s\n",jugada,remover);
@@ -477,17 +488,46 @@ void jugarCarta(char*ruta,char*revelada ,char *jugada,char* ChangeColor,int curr
 				}
 			else{
 				strcpy(ChangeColor,colorJugada);
-				/*if(strcmp(valueJugada,"Jump")==0){
-					}
 				if(strcmp(valueJugada,"Reverse")==0){
-					}*/				
+					if(OcurrenciaReverse==0){
+						OcurrenciaReverse=1;
+						}
+					else{
+						OcurrenciaReverse=0;
+						}
+					
+					}
+			
 				}
 			}
-			
+		return 0;	
 		}
-	return;
+	return 1;
 	
 }
+
+int N_cartas_en_mano(char*ruta, int jugador){
+	char string[150];
+	sprintf(string, "%s/Jugador%d", ruta, jugador);
+	int i = 0;
+
+	DIR* dirp;
+	dirp= opendir(string);
+	struct dirent *ent;
+
+	if (dirp == NULL){
+		perror("No puedo abrir el directorio");
+	}
+
+	while ((ent = readdir (dirp)) != NULL){
+
+		if ( (strcmp(ent->d_name, ".")!=0) && (strcmp(ent->d_name, "..")!=0) ){
+			i++;
+		}
+	}
+	closedir(dirp);
+	return i;
+	}
 /*int jugarCarta(char *ruta, char *colorActual, int currPlayer){
 
 	char nextP[15];
