@@ -400,7 +400,19 @@ void RepartirAleatorio(char *ruta,int*Ncartas){
 }
 
 //1 si es un movimiento valido, 0 si no
-int movimiento_valido(char *valueRevelada, char*colorRevelada ,char *valueJugada,  char*colorJugada, char**ChangeColor){
+int movimiento_valido(char *valueRevelada, char*colorRevelada ,char *valueJugada,  char*colorJugada, char**ChangeColor,int*SumaRobar){
+	
+	if(*SumaRobar!=0){
+		if((strcmp(valueRevelada, "+4") == 0) && (strcmp(valueJugada, "+2") == 0) && (strcmp(colorJugada, *ChangeColor) == 0) ){
+			return 1;
+			}
+		if((strcmp(valueRevelada, valueJugada) == 0) || (strcmp(valueJugada, "+4") == 0) ){
+			return 1;
+			}
+		else{
+			return 0;
+			}
+		}
 
 	if( (strcmp(valueJugada, "+4") == 0) || strcmp(valueJugada, "ChangeColor") == 0)
 		return 1;
@@ -435,6 +447,25 @@ void Change(char **ChangeColor){
 		*ChangeColor="Yellow";
 		}
 	}
+
+void CopiarColor(char**ChangeColor,char*colorJugada){
+	if(strcmp(colorJugada,"Blue")==0){
+		*ChangeColor="Blue";
+		}
+	if(strcmp(colorJugada,"Black")==0){
+		*ChangeColor="Black";
+		}
+	if(strcmp(colorJugada,"Red")==0){
+		*ChangeColor="Red";
+		}
+	if(strcmp(colorJugada,"Green")==0){
+		*ChangeColor="Green";
+		}
+	if(strcmp(colorJugada,"Yellow")==0){
+		*ChangeColor="Yellow";
+		}
+	}
+
 //Retorno para movimientos validos: 0 
 //Retorno para movimiento invalido o Paso: 1
 int jugarCarta(char*ruta,char*revelada ,char *jugada,char **ChangeColor,int currPlayer,int*SumaRobar,int*OcurrenciaReverse,int*Nseleccionadas,int*Ncartas){
@@ -468,7 +499,7 @@ int jugarCarta(char*ruta,char*revelada ,char *jugada,char **ChangeColor,int curr
 		char *valueJugada = strtok(carta, "_");
 		char *colorJugada = strtok(NULL, "_");
 		//printf("\n%s %s %s %s\n",valueRevelada,colorRevelada,valueJugada,colorJugada);
-		if(movimiento_valido(valueRevelada,colorRevelada,valueJugada,colorJugada,ChangeColor)==0){
+		if(movimiento_valido(valueRevelada,colorRevelada,valueJugada,colorJugada,ChangeColor,SumaRobar)==0){
 			robarCartas(ruta,currPlayer,1,Ncartas);
 			if((*SumaRobar)!=0){
 				printf("%d\n",*SumaRobar);
@@ -489,7 +520,7 @@ int jugarCarta(char*ruta,char*revelada ,char *jugada,char **ChangeColor,int curr
 				}
 			else{
 				
-				strcpy(*ChangeColor,colorJugada);
+				CopiarColor(ChangeColor,colorJugada);
 				printf("%s\n",*ChangeColor);
 				if(strcmp(valueJugada,"Reverse")==0){
 					if(*OcurrenciaReverse==0){
