@@ -82,7 +82,7 @@ int main(){
 	pipe(pipe41);
 
 	jugador1=getpid();
-	printf("%d\n", getpid());
+	//printf("%d\n", getpid());
 	pid = fork();
 
 	if(pid==0){
@@ -145,7 +145,7 @@ int main(){
 					break;
 					}
 				if(strcmp(mensaje,"TURNO1")==0){
-					printf("CACA\n");
+					//printf("CACA\n");
 						//printf("%d\n",Ncartas);
 						ver_revelada(ruta,revelada,Nseleccionadas,OcurrenciaJump,OcurrenciaReverse,SumaRobar);
 						strcpy(valueRevelada,revelada);
@@ -175,7 +175,7 @@ int main(){
 							
 							}
 							
-						printf("%s\n",*ChangeColor);	
+						printf("Black -> %s\n",*ChangeColor);	
 						seleccionar_jugada(ruta,1,jugada,revelada,mensaje,Ncartas);
 						
 						if (strcmp(mensaje,"Hay Ganador")!=0){
@@ -323,7 +323,7 @@ int main(){
 				if(*Ncartas==0 || strcmp(mensaje,"Hay Ganador")==0){
 					break;
 					}
-				printf("NUMERO MAZO -> %d\n",*Ncartas);
+				//printf("NUMERO MAZO -> %d\n",*Ncartas);
 				if(strcmp(mensaje,"TURNO2")==0){
 						//printf("%d\n",Ncartas);
 						ver_revelada(ruta,revelada,Nseleccionadas,OcurrenciaJump,OcurrenciaReverse,SumaRobar);
@@ -333,7 +333,7 @@ int main(){
 						if (strcmp(mensaje,"Hay Ganador")!=0){
 							//printf("\n%s %s\n",jugada,revelada);
 							mov_valido = jugarCarta(ruta,revelada, jugada,ChangeColor,2,SumaRobar,OcurrenciaReverse,Nseleccionadas,Ncartas);
-							printf("CACA\n");
+							//printf("CACA\n");
 							strcpy(valueJugada,strtok(jugada,"_"));
 							
 							if(mov_valido==0){

@@ -15,18 +15,6 @@ const char Names[15][15]={"0","1","2","3","4","5","6","7","8","9","+2","Reverse"
 
 struct stat st = {0};
 
-/*int Ncartas=108;
-
-int SumaRobar=0;
-
-int Nseleccionadas=0;
-
-int OcurrenciaReverse=0;
-
-int OcurrenciaJump=0;
-
-char ChangeColor[15]="Sin color";*/
-
 //Mueve carta(value) desde fichero from a to
 void mover_carta(char* ruta, char* value, char* from, char* to){
 	char string[150];
@@ -486,10 +474,10 @@ int jugarCarta(char*ruta,char*revelada ,char *jugada,char **ChangeColor,int curr
 	
 	if (strcmp(jugada,"Paso")==0){
 		if(*SumaRobar!=0){
-			printf("%d\n",*SumaRobar);
+			//printf("%d\n",*SumaRobar);
 			robarCartas(ruta,currPlayer,*SumaRobar,Ncartas);
 			*SumaRobar=0;
-			printf("%d\n",*SumaRobar);
+			//printf("%d\n",*SumaRobar);
 			}
 		return 1;
 		}
@@ -502,19 +490,19 @@ int jugarCarta(char*ruta,char*revelada ,char *jugada,char **ChangeColor,int curr
 		if(movimiento_valido(valueRevelada,colorRevelada,valueJugada,colorJugada,ChangeColor,SumaRobar)==0){
 			robarCartas(ruta,currPlayer,1,Ncartas);
 			if((*SumaRobar)!=0){
-				printf("%d\n",*SumaRobar);
+				//printf("%d\n",*SumaRobar);
 				robarCartas(ruta,currPlayer,*SumaRobar,Ncartas);
 				*SumaRobar=0;
-				printf("%d\n",*SumaRobar);
+				//printf("%d\n",*SumaRobar);
 				}
 			return 1;
 			}
 		else{
 			printf("%s\n%s\n",jugada,remover);
-			printf("CACA\n");
+			//printf("CACA\n");
 			mover_carta(ruta,jugada,currentP,"Revelada");
 			remove(remover);
-			printf("CACA\n");
+			//printf("CACA\n");
 			if(strcmp(valueJugada,"ChangeColor")==0 || strcmp(valueJugada,"+4")==0){
 				Change(ChangeColor);
 				}
